@@ -1,0 +1,14 @@
+{
+  "name": "lan-unlock",
+  "version": "0.6.0",
+  "description": "A simple nodejs server allowing user to unlock mac or start screensaver from mobile device via lan.",
+  "main": "server.js",
+  "scripts": {
+    "start": "forever -w server.js"
+  },
+  "author": "Balázs Suhajda",
+  "license": "WTFPL",
+  "dependencies": {
+    "applescript": "^1.0.0"
+  }
+}

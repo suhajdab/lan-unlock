@@ -1,0 +1,11 @@
+*.idea/*
+
+config.json
+
+node_modules/*
+
+local.key
+
+local.cert
+
+*.log
