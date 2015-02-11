@@ -4,7 +4,7 @@ A simple nodejs server allowing user to unlock mac or start screensaver from mob
 
 **Instructions:**
 
-1. Copy `config.json` and change default pin, possibly port.
+1. Open `config-BLANK.json` and change default pin, possibly port and save as `config.json`.
 2. Generate ssl certificates ( ex: [http://www.selfsignedcertificate.com](http://www.selfsignedcertificate.com) ) and place `local.cert` & `local.key` in root folder.
 3. `npm start`
 4. Hit https://your-macs-name.local:8080 (modify port if you changed in step 1).
