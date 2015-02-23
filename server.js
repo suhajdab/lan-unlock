@@ -56,13 +56,14 @@ function onRequest ( req, res ) {
 			var data = JSON.parse( body );
 
 			if ( config.pin !== data.pin ) {
-				eventName = 'incorrect pin'
+				eventName = 'incorrect pin';
+                sendJSON( res, { err: eventName });
 			} else if ( data.unlock ) {
 				unlock( res );
 				eventName = 'unlocked';
 			} else if ( data.sleep ) {
 				sleep( res );
-				eventName = 'put to sleep'
+				eventName = 'put to sleep';
 			}
 
 			logEvent( eventName, req );

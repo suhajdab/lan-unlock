@@ -28,6 +28,32 @@
             user-select: none;
         }
 
+        body:after {
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            content: '';
+            z-index: -1;
+
+            background: transparent;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        body.ok:after{
+            background: #060;
+            -webkit-animation: blink 500ms;
+            animation: blink 500ms;
+        }
+
+        body.err:after {
+            background: #600;
+            -webkit-animation: blink 500ms;
+            animation: blink 500ms;
+        }
+
         button {
             padding: 0;
 
@@ -86,6 +112,24 @@
                 line-height: 25vw;
             }
         }
+
+        @-webkit-keyframes blink {
+            0%, 50%, 100% {
+                opacity: 0;
+            }
+            25%, 75% {
+                opacity: 1;
+            }
+        }
+
+        @keyframes blink {
+            0%, 50%, 100% {
+                opacity: 0;
+            }
+            25%, 75% {
+                opacity: 1;
+            }
+        }
     </style>
 </head>
 <body>
@@ -95,8 +139,9 @@
     <script>
         (function () {
             var unlockBtn = document.querySelector( '.unlock' ),
-                sleepBtn = document.querySelector( '.sleep' )
-                pin = localStorage.getItem( 'pin' );
+                sleepBtn = document.querySelector( '.sleep' ),
+                pin = localStorage.getItem( 'pin' ),
+                timeout;
 
             if ( !pin ) {
                 configure();
@@ -108,7 +153,6 @@
             }
 
             function unlock () {
-                console.log('unlocking')
                 sendXhr({ unlock: true });
             }
 
@@ -116,9 +160,36 @@
                 sendXhr({ sleep: true });
             }
 
+            function onLoad () {
+                feedback( this.response );
+            }
+
+            function onError ( e ) {
+                console.error( e );
+            }
+
+            function feedback ( resp ) {
+                clearTimeout( timeout );
+                if ( resp.err ) {
+                    document.body.classList.add( 'err' );
+                    alert( err );
+                } else {
+                    document.body.classList.add( 'ok' );
+                }
+
+                setTimeout( reset, 600 );
+            }
+
+            function reset () {
+                document.body.classList.remove( 'error', 'ok' );
+            }
+
             function sendXhr ( data ) {
                 xhr = new XMLHttpRequest();
-                xhr.open( 'post','/' );
+                xhr.onload = onLoad;
+                xhr.onerror = onError;
+                xhr.responseType = 'json';
+                xhr.open( 'post', '/' );
                 data.pin = pin;
                 xhr.send( JSON.stringify( data ));
             }
