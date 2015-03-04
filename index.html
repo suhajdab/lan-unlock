@@ -168,6 +168,11 @@
                 console.error( e );
             }
 
+            // stop scrolling
+            function onTouchMove ( e ) {
+                e.stopPropagation();
+            }
+
             function feedback ( resp ) {
                 clearTimeout( timeout );
                 if ( resp.err ) {
@@ -196,6 +201,7 @@
 
             unlockBtn.addEventListener( 'click', unlock );
             sleepBtn.addEventListener( 'click', sleep );
+            document.body.addEventListener( 'touchmove', onTouchMove );
         })();
     </script>
 </body>

@@ -1,5 +1,4 @@
-var applescript = require( 'applescript' ),
-	https = require( 'https' ),
+var https = require( 'https' ),
 	fs = require( 'fs' ),
 
 	index = fs.readFileSync('index.html' ),
@@ -34,9 +33,11 @@ function onRequest ( req, res ) {
 			if ( config.pin !== data.pin ) {
 				eventName = 'incorrect pin';
                 sendJSON( res, { err: eventName });
+
 			} else if ( data.unlock ) {
 				unlock( res, unlockCallback );
 				eventName = 'unlocked';
+
 			} else if ( data.sleep ) {
 				screensaver( res, sleepCallback );
 				eventName = 'put to sleep';
@@ -45,7 +46,7 @@ function onRequest ( req, res ) {
 			logEvent( eventName, req );
 		});
 	} else {
-		serverIndex( res );
+		serveIndex( res );
 		eventName = 'index loaded';
 
 		logEvent( eventName, req );
@@ -76,7 +77,7 @@ function sleepCallback ( res, err, rtn ) {
 	sendJSON( res, resp );
 }
 
-function serverIndex ( res ) {
+function serveIndex ( res ) {
 	res.writeHead( 200, { 'Content-Type': 'text/html' });
 	res.end( index );
 }
