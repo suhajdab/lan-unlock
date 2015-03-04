@@ -14,12 +14,12 @@ var unlockScript =
 			delay 0.5\n\
 		end if\n\
 		tell application "System Events" to tell process "loginwindow"\n\
-			if (every UI element is not equal to {}) then\n\
-				tell window "Login Panel"\n\
-					keystroke "password"\n\
-					keystroke return\n\
-				end tell\n\
-			end if\n\
+			activate\n\
+			delay 0.2\n\
+            tell window "Login Panel"\n\
+                keystroke "password"\n\
+                keystroke return\n\
+            end tell\n\
 		end tell\n\
 	end tell';
 
