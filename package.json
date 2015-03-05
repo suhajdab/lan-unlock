@@ -4,7 +4,7 @@
   "description": "A simple nodejs server allowing user to unlock mac or start screensaver from mobile device via lan.",
   "main": "server.js",
   "scripts": {
-    "start": "forever start -w -o server.log server.js"
+    "start": "forever start -w -l lan-unlock.log -o log/out.log -e log/err.log server.js"
   },
   "author": "Balázs Suhajda",
   "license": "WTFPL",
