@@ -89,7 +89,8 @@ function sendJSON ( res, resp ) {
 }
 
 function logEvent ( eventName, req ) {
-	var time = new Date().toLocaleTimeString(),
+	var now = new Date(),
+		time = now.getDate() + '/' + ( now.getMonth() + 1 ) + '/' + now.getFullYear() + ' ' + now.toTimeString(),
 		ip = req.headers['x-forwarded-for'] ||
 			req.connection.remoteAddress ||
 			req.socket.remoteAddress ||
