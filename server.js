@@ -1,15 +1,15 @@
 var https = require( 'https' ),
 	fs = require( 'fs' ),
 
-	index = fs.readFileSync('index.html' ),
+	index = fs.readFileSync( 'index.html' ),
 	config = JSON.parse( fs.readFileSync( 'config.json' )),
 
 	screensaver = require( './screensaverScript' ),
 	unlock = require( './unlockScript' )( config.password );
 
 var options = {
-	key: fs.readFileSync('local.key'),
-	cert: fs.readFileSync('local.cert')
+	key: fs.readFileSync( 'local.key' ),
+	cert: fs.readFileSync( 'local.cert' )
 };
 
 function onRequest ( req, res ) {
@@ -19,10 +19,10 @@ function onRequest ( req, res ) {
 
 		var body = '';
 
-		req.on( 'data', function (data) {
+		req.on( 'data', function ( data ) {
 			body += data;
 			// kill large requests
-			if (body.length > 1e4) {
+			if ( body.length > 1e4 ) {
 				req.connection.destroy();
 			}
 		});
@@ -84,7 +84,7 @@ function serveIndex ( res ) {
 
 function sendJSON ( res, resp ) {
 	res.writeHead( 200, { 'Content-Type': 'application/json' });
-	res.write( JSON.stringify( resp ) );
+	res.write( JSON.stringify( resp ));
 	res.end();
 }
 
