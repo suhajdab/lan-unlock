@@ -12,3 +12,7 @@ A simple nodejs server allowing user to unlock mac or start screensaver from mob
 
 Disclaimer: **Use at your own risk!** Although I tried to make this relatively secure, I take no responsibility for any harm caused by the use of this software.  
 License: [WTFPL](http://www.wtfpl.net/)
+
+Icons:
+"Twemoji 1f512" by Twitter. Licensed under CC BY 4.0 via Wikimedia Commons - http://commons.wikimedia.org/wiki/File:Twemoji_1f513.svg#mediaviewer/File:Twemoji_1f512.svg
+"Twemoji 1f513" by Twitter. Licensed under CC BY 4.0 via Wikimedia Commons - http://commons.wikimedia.org/wiki/File:Twemoji_1f513.svg#mediaviewer/File:Twemoji_1f513.svg
