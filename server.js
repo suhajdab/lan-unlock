@@ -59,7 +59,7 @@ function onRequest ( req, res ) {
 		logEvent( eventName, req );
 	} else if ( req.url == '/state' ) {
         isScreensaverOn( function ( on ) {
-            sendJSON( res, { isScreensaverOn: on });
+            sendJSON( res, { locked: on });
         });
     }
 }

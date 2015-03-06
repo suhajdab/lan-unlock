@@ -62,7 +62,7 @@
             flex: 1;
 
             -webkit-appearance: none;
-            background: #eee;
+            background: #ccc;
             border: none;
             box-shadow: 0 10px 16px 2px rgba(0, 0, 0, 0.37);
             color: #fff;
@@ -82,7 +82,7 @@
             border-bottom: 1px solid #666;
         }
 
-        button.sleep {
+        button.lock {
             border-radius: 0 0 5px 5px;
             border-top: 1px solid #fff;
         }
@@ -100,7 +100,14 @@
             background: #c00;
             border-radius: 50%;
         }
-
+        
+        body.unlocked button.lock,
+        body.locked button.unlock {
+            -webkit-flex: 2;
+            flex: 2;
+            
+            background: #eee;
+        }
 
 
         @media (orientation:landscape) {
@@ -157,7 +164,7 @@
         Licensed under CC BY 4.0 via Wikimedia Commons -
         http://commons.wikimedia.org/wiki/File:Twemoji_1f513.svg#mediaviewer/File:Twemoji_1f512.svg
     -->
-    <button class="sleep" ontouchstart="">
+    <button class="lock" ontouchstart="">
         <img src="data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%20standalone%3D%22no%22%3F%3E%3Csvg%20xmlns%3Asvg%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20version%3D%221.1%22%20viewBox%3D%220%200%2047.5%2047.5%22%20style%3D%22enable-background%3Anew%200%200%2047.5%2047.5%3B%22%20id%3D%22svg2%22%20xml%3Aspace%3D%22preserve%22%3E%3Cdefs%20id%3D%22defs6%22%3E%3CclipPath%20id%3D%22clipPath18%22%3E%3Cpath%20d%3D%22M%200%2C38%2038%2C38%2038%2C0%200%2C0%200%2C38%20z%22%20id%3D%22path20%22%2F%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3Cg%20transform%3D%22matrix(1.25%2C0%2C0%2C-1.25%2C0%2C47.5)%22%20id%3D%22g12%22%3E%3Cg%20id%3D%22g14%22%3E%3Cg%20clip-path%3D%22url(%23clipPath18)%22%20id%3D%22g16%22%3E%3Cg%20transform%3D%22translate(19%2C32.9995)%22%20id%3D%22g22%22%3E%3Cpath%20d%3D%22m%200%2C0%20c%20-5.523%2C0%20-10%2C-4.477%20-10%2C-10%20l%200%2C-10%204%2C0%200%2C10%20c%200%2C3.313%202.687%2C6%206%2C6%203.313%2C0%206%2C-2.687%206%2C-6%20l%200%2C-10%204%2C0%200%2C10%20C%2010%2C-4.477%205.523%2C0%200%2C0%22%20id%3D%22path24%22%20style%3D%22fill%3A%23bcbec0%3Bfill-opacity%3A1%3Bfill-rule%3Anonzero%3Bstroke%3Anone%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate(31%2C5)%22%20id%3D%22g26%22%3E%3Cpath%20d%3D%22m%200%2C0%20c%200%2C-2.209%20-1.791%2C-4%20-4%2C-4%20l%20-16%2C0%20c%20-2.209%2C0%20-4%2C1.791%20-4%2C4%20l%200%2C10%20c%200%2C2.209%201.791%2C4%204%2C4%20l%2016%2C0%20c%202.209%2C0%204%2C-1.791%204%2C-4%20L%200%2C0%20z%22%20id%3D%22path28%22%20style%3D%22fill%3A%23ffac33%3Bfill-opacity%3A1%3Bfill-rule%3Anonzero%3Bstroke%3Anone%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E">
     </button>
 
@@ -171,7 +178,7 @@
     <script>
         (function () {
             var unlockBtn = document.querySelector( '.unlock' ),
-                sleepBtn = document.querySelector( '.sleep' ),
+                sleepBtn = document.querySelector( '.lock' ),
                 resetImg = document.querySelector( '.resetPin' ),
                 pin = localStorage.getItem( 'pin' ),
                 timeout;
@@ -186,14 +193,14 @@
             }
 
             function unlock () {
-                sendXhr({ unlock: true });
+                postCommand({ unlock: true });
             }
 
             function sleep () {
-                sendXhr({ sleep: true });
+                postCommand({ sleep: true });
             }
 
-            function onLoad () {
+            function onXhrLoad () {
                 feedback( this.response );
             }
 
@@ -203,6 +210,9 @@
 
             function onVisibilityChange( e ) {
                 //console.log( 'yellow' + document.visibilityState );
+                if ( document.visibilityState === 'visible' ) {
+                    getState();
+                }
             }
 
             // stop scrolling
@@ -216,24 +226,26 @@
             
             function feedback ( resp ) {
                 clearTimeout( timeout );
+                resetClasses();
 
                 if ( resp.err ) {
                     document.body.classList.add( 'err' );
-                    alert( err );
+                    console.error( err );
+                } else if ( typeof resp.locked !== 'undefined' ) {
+                    document.body.classList.add( resp.locked ? 'locked' : 'unlocked' );
                 } else {
-                    document.body.classList.add( 'ok' );
+                    getState();
                 }
 
-                setTimeout( reset, 600 );
             }
 
-            function reset () {
-                document.body.classList.remove( 'error', 'ok' );
+            function resetClasses () {
+                document.body.classList.remove( 'error', 'ok', 'locked', 'unlocked' );
             }
 
-            function sendXhr ( data ) {
+            function postCommand ( data ) {
                 var xhr = new XMLHttpRequest();
-                xhr.onload = onLoad;
+                xhr.onload = onXhrLoad;
                 xhr.onerror = onError;
                 xhr.responseType = 'json';
                 xhr.open( 'post', '/' );
@@ -241,6 +253,17 @@
                 xhr.send( JSON.stringify( data ));
             }
 
+            function getState ( data ) {
+                var xhr = new XMLHttpRequest();
+                xhr.onload = onXhrLoad;
+                xhr.onerror = onError;
+                xhr.responseType = 'json';
+                xhr.open( 'get', '/state' );
+                xhr.send();
+            }
+
+            getState();
+            
             unlockBtn.addEventListener( 'click', unlock );
             sleepBtn.addEventListener( 'click', sleep );
             resetImg.addEventListener( 'click', resetPin );
