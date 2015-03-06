@@ -1,5 +1,6 @@
 /*jshint node: true*/
-'use strict';
+
+// TODO: modularize!
 
 var https = require( 'https' ),
 	fs = require( 'fs' ),
@@ -7,6 +8,8 @@ var https = require( 'https' ),
 	index = fs.readFileSync( 'index.html' ),
 	config = JSON.parse( fs.readFileSync( 'config.json' )),
 
+	isScreensaverOn = require( './isScreensaverOn' ),
+	isDisplayOff = require( './isDisplayOff' ),
 	screensaver = require( './screensaverScript' ),
 	unlock = require( './unlockScript' )( config.password );
 
@@ -16,6 +19,7 @@ var options = {
 };
 
 function onRequest ( req, res ) {
+    'use strict';
 	var eventName;
 
 	if ( req.method === 'POST' ) {
@@ -53,10 +57,15 @@ function onRequest ( req, res ) {
 		eventName = '"' + req.url + '" requested';
 
 		logEvent( eventName, req );
-	}
+	} else if ( req.url == '/state' ) {
+        isScreensaverOn( function ( on ) {
+            sendJSON( res, { isScreensaverOn: on });
+        });
+    }
 }
 
 function unlockCallback ( res, err, rtn ) {
+    'use strict';
 	var resp = {};
 
 	if ( err ) {
@@ -69,6 +78,7 @@ function unlockCallback ( res, err, rtn ) {
 }
 
 function sleepCallback ( res, err, rtn ) {
+    'use strict';
 	var resp = {};
 
 	if ( err ) {
@@ -81,17 +91,20 @@ function sleepCallback ( res, err, rtn ) {
 }
 
 function serveIndex ( res ) {
+    'use strict';
 	res.writeHead( 200, { 'Content-Type': 'text/html' });
 	res.end( index );
 }
 
 function sendJSON ( res, resp ) {
+    'use strict';
 	res.writeHead( 200, { 'Content-Type': 'application/json' });
 	res.write( JSON.stringify( resp ));
 	res.end();
 }
 
 function logEvent ( eventName, req ) {
+    'use strict';
 	var now = new Date(),
 		time = now.getDate() + '/' + ( now.getMonth() + 1 ) + '/' + now.getFullYear() + ' ' + now.toTimeString(),
 		ip = req.headers['x-forwarded-for'] ||
