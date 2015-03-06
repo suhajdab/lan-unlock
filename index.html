@@ -22,6 +22,7 @@
             flex-direction: column;
             -webkit-justify-content: center;
             justify-content: center;
+            box-sizing: border-box;
 
             background: #666;
             -webkit-user-select: none;
@@ -55,9 +56,10 @@
         }
 
         button {
-            display: -webkit-flex;
-            display: flex;
+            height: 100%;
             padding: 0;
+            -webkit-flex: 1;
+            flex: 1;
 
             -webkit-appearance: none;
             background: #eee;
@@ -67,6 +69,7 @@
             text-transform: uppercase;
             outline: none;
             text-align: center;
+            transition: all 500ms;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -85,37 +88,39 @@
         }
 
         button img {
-            height: 70%;
+            height: 30%;
             margin: auto;
+        }
+
+        body > img {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            width: 36px;
+            background: #c00;
+            border-radius: 50%;
         }
 
 
 
         @media (orientation:landscape) {
+            body {
+                padding: 10vh 10vh;
+            }
+            
             button {
                 width: 80vh;
-            }
-
-            button.unlock {
-                height: 50vh;
-            }
-
-            button.sleep {
-                height: 25vh;
             }
         }
 
         @media (orientation:portrait) {
+            body {
+                padding-top: -webkit-calc(50vh - 40vw);
+                padding-bottom: -webkit-calc(50vh - 40vw);
+            }
+            
             button {
                 width: 80vw;
-            }
-
-            button.unlock {
-                height: 50vw;
-            }
-
-            button.sleep {
-                height: 25vw;
             }
         }
 
@@ -156,10 +161,18 @@
         <img src="data:image/svg+xml,%3C%3Fxml%20version%3D%221.0%22%20encoding%3D%22UTF-8%22%20standalone%3D%22no%22%3F%3E%3Csvg%20xmlns%3Asvg%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20version%3D%221.1%22%20viewBox%3D%220%200%2047.5%2047.5%22%20style%3D%22enable-background%3Anew%200%200%2047.5%2047.5%3B%22%20id%3D%22svg2%22%20xml%3Aspace%3D%22preserve%22%3E%3Cdefs%20id%3D%22defs6%22%3E%3CclipPath%20id%3D%22clipPath18%22%3E%3Cpath%20d%3D%22M%200%2C38%2038%2C38%2038%2C0%200%2C0%200%2C38%20z%22%20id%3D%22path20%22%2F%3E%3C%2FclipPath%3E%3C%2Fdefs%3E%3Cg%20transform%3D%22matrix(1.25%2C0%2C0%2C-1.25%2C0%2C47.5)%22%20id%3D%22g12%22%3E%3Cg%20id%3D%22g14%22%3E%3Cg%20clip-path%3D%22url(%23clipPath18)%22%20id%3D%22g16%22%3E%3Cg%20transform%3D%22translate(19%2C32.9995)%22%20id%3D%22g22%22%3E%3Cpath%20d%3D%22m%200%2C0%20c%20-5.523%2C0%20-10%2C-4.477%20-10%2C-10%20l%200%2C-10%204%2C0%200%2C10%20c%200%2C3.313%202.687%2C6%206%2C6%203.313%2C0%206%2C-2.687%206%2C-6%20l%200%2C-10%204%2C0%200%2C10%20C%2010%2C-4.477%205.523%2C0%200%2C0%22%20id%3D%22path24%22%20style%3D%22fill%3A%23bcbec0%3Bfill-opacity%3A1%3Bfill-rule%3Anonzero%3Bstroke%3Anone%22%2F%3E%3C%2Fg%3E%3Cg%20transform%3D%22translate(31%2C5)%22%20id%3D%22g26%22%3E%3Cpath%20d%3D%22m%200%2C0%20c%200%2C-2.209%20-1.791%2C-4%20-4%2C-4%20l%20-16%2C0%20c%20-2.209%2C0%20-4%2C1.791%20-4%2C4%20l%200%2C10%20c%200%2C2.209%201.791%2C4%204%2C4%20l%2016%2C0%20c%202.209%2C0%204%2C-1.791%204%2C-4%20L%200%2C0%20z%22%20id%3D%22path28%22%20style%3D%22fill%3A%23ffac33%3Bfill-opacity%3A1%3Bfill-rule%3Anonzero%3Bstroke%3Anone%22%2F%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fg%3E%3C%2Fsvg%3E">
     </button>
 
+    <!--
+        icon attribution: Font Awesome by Dave Gandy - http://fortawesome.github.com/Font-Awesome
+        Licensed under the Creative Commons Attribution-Share Alike 3.0 Unported license.
+        http://commons.wikimedia.org/wiki/File:Remove_sign_font_awesome.svg
+    -->
+    <img class="resetPin" src="data:image/svg+xml,%3Csvg%20xmlns%3Adc%3D%22http%3A%2F%2Fpurl.org%2Fdc%2Felements%2F1.1%2F%22%20xmlns%3Acc%3D%22http%3A%2F%2Fcreativecommons.org%2Fns%23%22%20xmlns%3Ardf%3D%22http%3A%2F%2Fwww.w3.org%2F1999%2F02%2F22-rdf-syntax-ns%23%22%20xmlns%3Asvg%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20xmlns%3Asodipodi%3D%22http%3A%2F%2Fsodipodi.sourceforge.net%2FDTD%2Fsodipodi-0.dtd%22%20xmlns%3Ainkscape%3D%22http%3A%2F%2Fwww.inkscape.org%2Fnamespaces%2Finkscape%22%20viewBox%3D%220%20-256%201792%201792%22%20id%3D%22svg3013%22%20version%3D%221.1%22%20inkscape%3Aversion%3D%220.48.3.1%20r9886%22%20width%3D%22100%25%22%20height%3D%22100%25%22%20sodipodi%3Adocname%3D%22remove_sign_font_awesome.svg%22%3E%0A%20%20%3Cmetadata%20id%3D%22metadata3023%22%3E%0A%20%20%20%20%3Crdf%3ARDF%3E%0A%20%20%20%20%20%20%3Ccc%3AWork%20rdf%3Aabout%3D%22%22%3E%0A%20%20%20%20%20%20%20%20%3Cdc%3Aformat%3Eimage%2Fsvg%2Bxml%3C%2Fdc%3Aformat%3E%0A%20%20%20%20%20%20%20%20%3Cdc%3Atype%20rdf%3Aresource%3D%22http%3A%2F%2Fpurl.org%2Fdc%2Fdcmitype%2FStillImage%22%2F%3E%0A%20%20%20%20%20%20%3C%2Fcc%3AWork%3E%0A%20%20%20%20%3C%2Frdf%3ARDF%3E%0A%20%20%3C%2Fmetadata%3E%0A%20%20%3Cdefs%20id%3D%22defs3021%22%2F%3E%0A%20%20%3Csodipodi%3Anamedview%20pagecolor%3D%22%23ffffff%22%20bordercolor%3D%22%23666666%22%20borderopacity%3D%221%22%20objecttolerance%3D%2210%22%20gridtolerance%3D%2210%22%20guidetolerance%3D%2210%22%20inkscape%3Apageopacity%3D%220%22%20inkscape%3Apageshadow%3D%222%22%20inkscape%3Awindow-width%3D%22640%22%20inkscape%3Awindow-height%3D%22480%22%20id%3D%22namedview3019%22%20showgrid%3D%22false%22%20inkscape%3Azoom%3D%220.13169643%22%20inkscape%3Acx%3D%22896%22%20inkscape%3Acy%3D%22896%22%20inkscape%3Awindow-x%3D%220%22%20inkscape%3Awindow-y%3D%2225%22%20inkscape%3Awindow-maximized%3D%220%22%20inkscape%3Acurrent-layer%3D%22svg3013%22%2F%3E%0A%20%20%3Cg%20transform%3D%22matrix(1%2C0%2C0%2C-1%2C136.67797%2C1293.0169)%22%20id%3D%22g3015%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22m%201149%2C414%20q%200%2C26%20-19%2C45%20l%20-181%2C181%20181%2C181%20q%2019%2C19%2019%2C45%200%2C27%20-19%2C46%20l%20-90%2C90%20q%20-19%2C19%20-46%2C19%20-26%2C0%20-45%2C-19%20L%20768%2C821%20587%2C1002%20q%20-19%2C19%20-45%2C19%20-27%2C0%20-46%2C-19%20l%20-90%2C-90%20q%20-19%2C-19%20-19%2C-46%200%2C-26%2019%2C-45%20L%20587%2C640%20406%2C459%20q%20-19%2C-19%20-19%2C-45%200%2C-27%2019%2C-46%20l%2090%2C-90%20q%2019%2C-19%2046%2C-19%2026%2C0%2045%2C19%20L%20768%2C459%20949%2C278%20q%2019%2C-19%2045%2C-19%2027%2C0%2046%2C19%20l%2090%2C90%20q%2019%2C19%2019%2C46%20z%20m%20387%2C226%20Q%201536%2C431%201433%2C254.5%201330%2C78%201153.5%2C-25%20977%2C-128%20768%2C-128%20559%2C-128%20382.5%2C-25%20206%2C78%20103%2C254.5%200%2C431%200%2C640%200%2C849%20103%2C1025.5%20206%2C1202%20382.5%2C1305%20559%2C1408%20768%2C1408%20977%2C1408%201153.5%2C1305%201330%2C1202%201433%2C1025.5%201536%2C849%201536%2C640%20z%22%20id%3D%22path3017%22%20inkscape%3Aconnector-curvature%3D%220%22%20style%3D%22fill%3AcurrentColor%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E">
+
     <script>
         (function () {
             var unlockBtn = document.querySelector( '.unlock' ),
                 sleepBtn = document.querySelector( '.sleep' ),
+                resetImg = document.querySelector( '.resetPin' ),
                 pin = localStorage.getItem( 'pin' ),
                 timeout;
 
@@ -169,7 +182,7 @@
 
             function configure () {
                 pin = prompt( 'Please enter the pin defined in config.json' );
-                localStorage.setItem( 'pin', pin );
+                if ( pin ) localStorage.setItem( 'pin', pin );
             }
 
             function unlock () {
@@ -188,11 +201,19 @@
                 console.error( e );
             }
 
+            function onVisibilityChange( e ) {
+                //console.log( 'yellow' + document.visibilityState );
+            }
+
             // stop scrolling
             function onTouchMove ( e ) {
                 e.preventDefault();
             }
 
+            function resetPin () {
+                if ( confirm( 'Are you sure you want to re-enter your pin?' )) configure();
+            }
+            
             function feedback ( resp ) {
                 clearTimeout( timeout );
 
@@ -222,7 +243,9 @@
 
             unlockBtn.addEventListener( 'click', unlock );
             sleepBtn.addEventListener( 'click', sleep );
+            resetImg.addEventListener( 'click', resetPin );
             document.body.addEventListener( 'touchmove', onTouchMove );
+            document.addEventListener( 'visibilitychange', onVisibilityChange, false );
         })();
     </script>
 </body>
