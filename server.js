@@ -1,3 +1,6 @@
+/*jshint node: true*/
+'use strict';
+
 var https = require( 'https' ),
 	fs = require( 'fs' ),
 
@@ -45,9 +48,9 @@ function onRequest ( req, res ) {
 
 			logEvent( eventName, req );
 		});
-	} else {
+	} else if ( req.url == '/' ) {
 		serveIndex( res );
-		eventName = 'index loaded';
+		eventName = '"' + req.url + '" requested';
 
 		logEvent( eventName, req );
 	}
