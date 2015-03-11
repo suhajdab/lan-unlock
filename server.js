@@ -58,8 +58,15 @@ function onRequest ( req, res ) {
 
 		logEvent( eventName, req );
 	} else if ( req.url == '/state' ) {
-        isScreensaverOn( function ( on ) {
-            sendJSON( res, { locked: on });
+        isScreensaverOn( function ( isOn ) {
+            console.log( 'isScreensaverOn', isOn );
+            if ( !isOn ) {
+                isDisplayOff( function ( isOff ) {
+                    sendJSON( res, { locked: isOff });
+                });
+            } else {
+                sendJSON( res, { locked: isOn });
+            }
         });
     }
 }
@@ -106,7 +113,7 @@ function sendJSON ( res, resp ) {
 function logEvent ( eventName, req ) {
     'use strict';
 	var now = new Date(),
-		time = now.getDate() + '/' + ( now.getMonth() + 1 ) + '/' + now.getFullYear() + ' ' + now.toTimeString(),
+		time = now.getFullYear() + '/' + ( now.getMonth() + 1 ) + '/' + now.getDate() + ' ' + now.toTimeString(),
 		ip = req.headers['x-forwarded-for'] ||
 			req.connection.remoteAddress ||
 			req.socket.remoteAddress ||

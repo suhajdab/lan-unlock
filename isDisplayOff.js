@@ -1,3 +1,4 @@
+/*jshint node: true*/
 var exec = require( 'child_process' ).exec;
 
 // TODO: error handling maybe?
@@ -18,7 +19,9 @@ function isDisplayOff ( callback ) {
 }
 
 function onGotCurrentPowerState( state, callback ) {
-	if ( state === 0 ) callback( true );
+    // seems the display is blank & screensaver off when power state <= 2
+	if ( state <= 2 ) callback( true );
+    // display on or dimmed
 	else callback( false );
 }
 

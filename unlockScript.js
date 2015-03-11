@@ -1,3 +1,4 @@
+/*jshint multistr: true, node: true*/
 var applescript = require( 'applescript' );
 
 var unlockScript =
