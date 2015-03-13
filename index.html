@@ -69,7 +69,7 @@
             text-transform: uppercase;
             outline: none;
             text-align: center;
-            transition: flex 500ms;
+            transition: -webkit-flex 500ms;
             -webkit-tap-highlight-color: transparent;
         }
 
@@ -179,7 +179,7 @@
     <script>
         (function () {
             var unlockBtn = document.querySelector( '.unlock' ),
-                sleepBtn = document.querySelector( '.lock' ),
+                lockBtn = document.querySelector( '.lock' ),
                 resetImg = document.querySelector( '.resetPin' ),
                 pin = localStorage.getItem( 'pin' ),
                 timeout;
@@ -194,11 +194,11 @@
             }
 
             function unlock () {
-                postCommand({ unlock: true });
+                postCommand( 'unlock' );
             }
 
-            function sleep () {
-                postCommand({ sleep: true });
+            function lock () {
+                postCommand( 'lock' );
             }
 
             function onXhrLoad () {
@@ -232,8 +232,8 @@
                 if ( resp.err ) {
                     document.body.classList.add( 'err' );
                     console.error( err );
-                } else if ( typeof resp.locked !== 'undefined' ) {
-                    document.body.classList.add( resp.locked ? 'locked' : 'unlocked' );
+                } else if ( typeof resp.state !== 'undefined' ) {
+                    document.body.classList.add( resp.state );
                 } else {
                     getState();
                 }
@@ -244,17 +244,20 @@
                 document.body.classList.remove( 'error', 'ok', 'locked', 'unlocked' );
             }
 
-            function postCommand ( data ) {
-                var xhr = new XMLHttpRequest();
+            function postCommand ( cmd ) {
+                var xhr = new XMLHttpRequest(),
+                    data = {
+                        cmd: cmd,
+                        pin: pin
+                    };
                 xhr.onload = onXhrLoad;
                 xhr.onerror = onError;
                 xhr.responseType = 'json';
                 xhr.open( 'post', '/' );
-                data.pin = pin;
                 xhr.send( JSON.stringify( data ));
             }
 
-            function getState ( data ) {
+            function getState () {
                 var xhr = new XMLHttpRequest();
                 xhr.onload = onXhrLoad;
                 xhr.onerror = onError;
@@ -266,7 +269,7 @@
             getState();
             
             unlockBtn.addEventListener( 'click', unlock );
-            sleepBtn.addEventListener( 'click', sleep );
+            lockBtn.addEventListener( 'click', lock );
             resetImg.addEventListener( 'click', resetPin );
             document.body.addEventListener( 'touchmove', onTouchMove );
             document.addEventListener( 'visibilitychange', onVisibilityChange, false );

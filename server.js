@@ -8,8 +8,11 @@ var https = require( 'https' ),
 	index = fs.readFileSync( 'index.html' ),
 	config = JSON.parse( fs.readFileSync( 'config.json' )),
 
-	isScreensaverOn = require( './isScreensaverOn' ),
-	isDisplayOff = require( './isDisplayOff' ),
+	// state switches can take time, so must keep track
+	currentState, expectedState,
+	maxTries = 10, tries = 0,
+
+	isScreenlocked = require( './isScreenlocked' ),
 	screensaver = require( './screensaverScript' ),
 	unlock = require( './unlockScript' )( config.password );
 
@@ -41,34 +44,54 @@ function onRequest ( req, res ) {
 				eventName = 'incorrect pin';
                 sendJSON( res, { err: eventName });
 
-			} else if ( data.unlock ) {
-				unlock( res, unlockCallback );
+			} else if ( data.cmd === 'unlock' ) {
+				expectedState = 'unlocked';
+				currentState = undefined;
+
+				isScreenlocked( function ( isLocked ) {
+					if ( isLocked ) unlock( res, unlockCallback );
+				});
+
 				eventName = 'unlocked';
 
-			} else if ( data.sleep ) {
+			} else if ( data.cmd === 'lock' ) {
+				expectedState = 'locked';
+				currentState = undefined;
+
 				screensaver( res, sleepCallback );
-				eventName = 'put to sleep';
+				eventName = 'locked';
 			}
 
 			logEvent( eventName, req );
 		});
+
 	} else if ( req.url == '/' ) {
 		serveIndex( res );
 		eventName = '"' + req.url + '" requested';
 
 		logEvent( eventName, req );
+
 	} else if ( req.url == '/state' ) {
-        isScreensaverOn( function ( isOn ) {
-            console.log( 'isScreensaverOn', isOn );
-            if ( !isOn ) {
-                isDisplayOff( function ( isOff ) {
-                    sendJSON( res, { locked: isOff });
-                });
-            } else {
-                sendJSON( res, { locked: isOn });
-            }
-        });
+		awaitAndSendState( res );
     }
+}
+
+function awaitAndSendState ( res ) {
+	if ( tries >= maxTries ) {
+		console.error( 'State change didn\'t happen in ' + tries + ' tries.' );
+		sendJSON( res, { state: '' });
+		return;
+	}
+	setTimeout(function () {
+		isScreenlocked( function ( isLocked ) {
+			var currentState = isLocked ? 'locked' : 'unlocked';
+			if ( !expectedState || currentState === expectedState ) {
+				sendJSON( res, { state: currentState });
+			}
+			else awaitAndSendState( res );
+		});
+	}, 500 );
+	tries ++;
 }
 
 function unlockCallback ( res, err, rtn ) {
