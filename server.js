@@ -10,7 +10,7 @@ var https = require( 'https' ),
 
 	// state switches can take time, so must keep track
 	currentState, expectedState,
-	maxTries = 10, tries = 0,
+	maxTries = 20, tries = 0, retryDelay = 500,
 
 	isScreenlocked = require( './isScreenlocked' ),
 	screensaver = require( './screensaverScript' ),
@@ -23,6 +23,7 @@ var options = {
 
 function onRequest ( req, res ) {
     'use strict';
+
 	var eventName;
 
 	if ( req.method === 'POST' ) {
@@ -62,14 +63,14 @@ function onRequest ( req, res ) {
 				eventName = 'locked';
 			}
 
-			logEvent( eventName, req );
+			logRequest( eventName, req );
 		});
 
 	} else if ( req.url == '/' ) {
 		serveIndex( res );
 		eventName = '"' + req.url + '" requested';
 
-		logEvent( eventName, req );
+		logRequest( eventName, req );
 
 	} else if ( req.url == '/state' ) {
 		awaitAndSendState( res );
@@ -77,10 +78,13 @@ function onRequest ( req, res ) {
 }
 
 function awaitAndSendState ( res ) {
+	'use strict';
+
 	if ( tries >= maxTries ) {
-		console.error( 'State change didn\'t happen in ' + tries + ' tries.' );
+		var err = "Waiting for host to become '" + expectedState + "' timeout after" + (tries * retryDelay / 1000 ) + " seconds.";
+		log( err );
 		tries = 0;
-		sendJSON( res, { state: '' });
+		sendJSON( res, { err: err });
 		return;
 	}
 	setTimeout(function () {
@@ -92,7 +96,7 @@ function awaitAndSendState ( res ) {
 			}
 			else awaitAndSendState( res );
 		});
-	}, 500 );
+	}, retryDelay );
 	tries ++;
 }
 
@@ -124,26 +128,37 @@ function sleepCallback ( res, err, rtn ) {
 
 function serveIndex ( res ) {
     'use strict';
+
 	res.writeHead( 200, { 'Content-Type': 'text/html' });
 	res.end( index );
 }
 
 function sendJSON ( res, resp ) {
     'use strict';
+
 	res.writeHead( 200, { 'Content-Type': 'application/json' });
 	res.write( JSON.stringify( resp ));
 	res.end();
 }
 
-function logEvent ( eventName, req ) {
+function logRequest ( eventName, req ) {
+	'use strict';
+
+	var ip = req.headers['x-forwarded-for'] ||
+		req.connection.remoteAddress ||
+		req.socket.remoteAddress ||
+		req.connection.socket.remoteAddress,
+	logEntry = [ eventName, 'from', ip ].join( ' ' );
+
+	log( logEntry );
+}
+
+function log ( logEntry ) {
     'use strict';
+
 	var now = new Date(),
 		time = now.getFullYear() + '/' + ( now.getMonth() + 1 ) + '/' + now.getDate() + ' ' + now.toTimeString(),
-		ip = req.headers['x-forwarded-for'] ||
-			req.connection.remoteAddress ||
-			req.socket.remoteAddress ||
-			req.connection.socket.remoteAddress,
-		logEntry = [ time, eventName, 'from', ip ].join( ' ' );
+		logEntry = [ time, logEntry ].join( ' ' );
 
 	console.log( logEntry );
 }
