@@ -79,6 +79,7 @@ function onRequest ( req, res ) {
 function awaitAndSendState ( res ) {
 	if ( tries >= maxTries ) {
 		console.error( 'State change didn\'t happen in ' + tries + ' tries.' );
+		tries = 0;
 		sendJSON( res, { state: '' });
 		return;
 	}
@@ -86,6 +87,7 @@ function awaitAndSendState ( res ) {
 		isScreenlocked( function ( isLocked ) {
 			var currentState = isLocked ? 'locked' : 'unlocked';
 			if ( !expectedState || currentState === expectedState ) {
+				tries = 0;
 				sendJSON( res, { state: currentState });
 			}
 			else awaitAndSendState( res );
