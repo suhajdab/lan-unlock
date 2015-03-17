@@ -9,7 +9,7 @@ var https = require( 'https' ),
 	config = JSON.parse( fs.readFileSync( 'config.json' )),
 
 	// state switches can take time, so must keep track
-	currentState, expectedState,
+	currentState, awaitedState,
 	maxTries = 20, tries = 0, retryDelay = 500,
 
 	isScreenlocked = require( './isScreenlocked' ),
@@ -46,20 +46,30 @@ function onRequest ( req, res ) {
                 sendJSON( res, { err: eventName });
 
 			} else if ( data.cmd === 'unlock' ) {
-				expectedState = 'unlocked';
-				currentState = undefined;
 
 				isScreenlocked( function ( isLocked ) {
-					if ( isLocked ) unlock( res, unlockCallback );
+					if ( isLocked ) {
+						awaitedState = 'unlocked';
+						currentState = undefined;
+						unlock( res, unlockCallback );
+					} else {
+						sendJSON( res, {});
+					}
 				});
 
 				eventName = 'unlocked';
 
 			} else if ( data.cmd === 'lock' ) {
-				expectedState = 'locked';
-				currentState = undefined;
 
-				screensaver( res, sleepCallback );
+				isScreenlocked( function ( isLocked ) {
+					if ( !isLocked ) {
+						awaitedState = 'locked';
+						currentState = undefined;
+						screensaver( res, sleepCallback );
+					} else {
+						sendJSON( res, {});
+					}
+				});
 				eventName = 'locked';
 			}
 
@@ -81,7 +91,7 @@ function awaitAndSendState ( res ) {
 	'use strict';
 
 	if ( tries >= maxTries ) {
-		var err = "Waiting for host to become '" + expectedState + "' timed out after " + (tries * retryDelay / 1000 ) + " seconds.";
+		var err = "Waiting for host to become '" + awaitedState + "' timed out after " + (tries * retryDelay / 1000 ) + " seconds. (current state: " + currentState + ")";
 		log( err );
 		tries = 0;
 		sendJSON( res, { err: err });
@@ -89,9 +99,10 @@ function awaitAndSendState ( res ) {
 	}
 	setTimeout(function () {
 		isScreenlocked( function ( isLocked ) {
-			var currentState = isLocked ? 'locked' : 'unlocked';
-			if ( !expectedState || currentState === expectedState ) {
+			currentState = isLocked ? 'locked' : 'unlocked';
+			if ( !awaitedState || currentState === awaitedState ) {
 				tries = 0;
+				awaitedState = false;
 				sendJSON( res, { state: currentState });
 			}
 			else awaitAndSendState( res );
