@@ -81,7 +81,7 @@ function awaitAndSendState ( res ) {
 	'use strict';
 
 	if ( tries >= maxTries ) {
-		var err = "Waiting for host to become '" + expectedState + "' timeout after" + (tries * retryDelay / 1000 ) + " seconds.";
+		var err = "Waiting for host to become '" + expectedState + "' timed out after " + (tries * retryDelay / 1000 ) + " seconds.";
 		log( err );
 		tries = 0;
 		sendJSON( res, { err: err });
